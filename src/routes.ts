@@ -17,11 +17,17 @@ routes.post("/feedbacks", async (req, res) => {
     nodemailerMailAdapter
   );
 
-  await submitFeedbackUseCase.execute({
-    type,
-    comment,
-    screenshot,
-  });
+  try {
+    await submitFeedbackUseCase.execute({
+      type,
+      comment,
+      screenshot,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ Error: error.message });
+    }
+  }
 
   return res.status(201).json({ ok: "ok" });
 });
